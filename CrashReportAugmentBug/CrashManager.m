@@ -45,8 +45,38 @@ static NSString* kLaunchCountKey = @"CrashTestLaunchCount";
 	[[NSUserDefaults standardUserDefaults] setInteger:self.launchCount + 1 forKey:kLaunchCountKey];
 }
 
+- (void)resetLaunchCount {
+	[[NSUserDefaults standardUserDefaults] setInteger:0 forKey:kLaunchCountKey];
+}
+
 - (NSInteger)launchCount {
 	return [[NSUserDefaults standardUserDefaults] integerForKey:kLaunchCountKey];
+}
+
+- (BOOL)shouldCrash {
+	return self.launchCount % 2 == 1;
+}
+
+- (void)crashIfNeeded {
+	if (!self.shouldCrash) {
+		return;
+	}
+
+	dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+		NSArray* items = @[@"a"];
+		NSString* i = items[2];
+		NSLog(@"Crashed with %@", i);
+	});
+}
+
+- (void)sendCrashReport {
+	[[FIRCrashlytics crashlytics] logWithFormat:@"Intentional crash with launch count == %ld", (long)self.launchCount];
+}
+
+- (void)sendTestEvent {
+	[FIRAnalytics logEventWithName:@"Test sample app event logging" parameters:@{
+		@"Launch count" : [NSString stringWithFormat:@"%ld", (long)self.launchCount]
+	}];
 }
 
 @end

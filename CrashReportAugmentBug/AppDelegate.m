@@ -30,6 +30,8 @@
 
 	[[CrashManager sharedInstance] setUpOnce];
 
+	[[CrashManager sharedInstance] incrementLaunchCount];
+
 	return YES;
 }
 
