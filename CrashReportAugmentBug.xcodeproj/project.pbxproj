@@ -26,6 +26,7 @@
 		CEA6664C251D430E0088220A /* GoogleUtilities.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEA66642251D430E0088220A /* GoogleUtilities.xcframework */; };
 		CEA6664F251D433A0088220A /* FirebaseCrashlytics.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEA6664E251D433A0088220A /* FirebaseCrashlytics.xcframework */; };
 		CEA66653251D441E0088220A /* CrashManager.m in Sources */ = {isa = PBXBuildFile; fileRef = CEA66652251D441E0088220A /* CrashManager.m */; };
+		CEA66655251D49AF0088220A /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = CEA66654251D49AF0088220A /* GoogleService-Info.plist */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -55,6 +56,7 @@
 		CEA66650251D43690088220A /* Firebase.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Firebase.h; sourceTree = "<group>"; };
 		CEA66651251D441E0088220A /* CrashManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CrashManager.h; sourceTree = "<group>"; };
 		CEA66652251D441E0088220A /* CrashManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CrashManager.m; sourceTree = "<group>"; };
+		CEA66654251D49AF0088220A /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -111,6 +113,7 @@
 				CE3D7A51251D3D4900618550 /* LaunchScreen.storyboard */,
 				CE3D7A54251D3D4900618550 /* Info.plist */,
 				CE3D7A55251D3D4900618550 /* main.m */,
+				CEA66654251D49AF0088220A /* GoogleService-Info.plist */,
 				CEA6664D251D43160088220A /* Frameworks */,
 			);
 			path = CrashReportAugmentBug;
@@ -193,6 +196,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				CE3D7A53251D3D4900618550 /* LaunchScreen.storyboard in Resources */,
+				CEA66655251D49AF0088220A /* GoogleService-Info.plist in Resources */,
 				CE3D7A50251D3D4900618550 /* Assets.xcassets in Resources */,
 				CE3D7A4E251D3D4700618550 /* Main.storyboard in Resources */,
 			);
