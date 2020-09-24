@@ -15,29 +15,38 @@
 //  from Adobe.
 //
 
-#import "ViewController.h"
-
 #import "CrashManager.h"
 
-@interface ViewController ()
+#import "Firebase.h"
 
-@property (nonatomic) UILabel* launchCount;
+@interface CrashManager()
 
 @end
 
-@implementation ViewController
+static NSString* kLaunchCountKey = @"CrashTestLaunchCount";
 
-- (void)loadView {
-	[super loadView];
+@implementation CrashManager
 
-	self.launchCount = [UILabel new];
-	self.launchCount.text = [NSString stringWithFormat:@"Launch count: %ld", (long)[[CrashManager sharedInstance] launchCount]];
++ (instancetype)sharedInstance {
+	static CrashManager* _manager;
+	static dispatch_once_t onceToken;
+	dispatch_once(&onceToken, ^{
+		_manager = [CrashManager new];
+	});
 
-	UIStackView* stack = [[UIStackView alloc] initWithArrangedSubviews:@[
-		self.launchCount
-	]];
-	stack.axis = UILayoutConstraintAxisVertical;
-	stack.frame = self.view.bounds;
+	return _manager;
+}
+
+- (void)setUpOnce {
+	[FIRApp configure];
+}
+
+- (void)incrementLaunchCount {
+	[[NSUserDefaults standardUserDefaults] setInteger:self.launchCount + 1 forKey:kLaunchCountKey];
+}
+
+- (NSInteger)launchCount {
+	return [[NSUserDefaults standardUserDefaults] integerForKey:kLaunchCountKey];
 }
 
 @end

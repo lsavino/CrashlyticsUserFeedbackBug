@@ -25,6 +25,7 @@
 		CEA6664B251D430E0088220A /* FIRAnalyticsConnector.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEA66641251D430E0088220A /* FIRAnalyticsConnector.framework */; };
 		CEA6664C251D430E0088220A /* GoogleUtilities.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEA66642251D430E0088220A /* GoogleUtilities.xcframework */; };
 		CEA6664F251D433A0088220A /* FirebaseCrashlytics.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEA6664E251D433A0088220A /* FirebaseCrashlytics.xcframework */; };
+		CEA66653251D441E0088220A /* CrashManager.m in Sources */ = {isa = PBXBuildFile; fileRef = CEA66652251D441E0088220A /* CrashManager.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -52,6 +53,8 @@
 		CEA66642251D430E0088220A /* GoogleUtilities.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; path = GoogleUtilities.xcframework; sourceTree = "<group>"; };
 		CEA6664E251D433A0088220A /* FirebaseCrashlytics.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; path = FirebaseCrashlytics.xcframework; sourceTree = "<group>"; };
 		CEA66650251D43690088220A /* Firebase.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Firebase.h; sourceTree = "<group>"; };
+		CEA66651251D441E0088220A /* CrashManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CrashManager.h; sourceTree = "<group>"; };
+		CEA66652251D441E0088220A /* CrashManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CrashManager.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -99,6 +102,8 @@
 				CE3D7A44251D3D4600618550 /* AppDelegate.m */,
 				CE3D7A46251D3D4600618550 /* SceneDelegate.h */,
 				CE3D7A47251D3D4600618550 /* SceneDelegate.m */,
+				CEA66651251D441E0088220A /* CrashManager.h */,
+				CEA66652251D441E0088220A /* CrashManager.m */,
 				CE3D7A49251D3D4700618550 /* ViewController.h */,
 				CE3D7A4A251D3D4700618550 /* ViewController.m */,
 				CE3D7A4C251D3D4700618550 /* Main.storyboard */,
@@ -203,6 +208,7 @@
 				CE3D7A4B251D3D4700618550 /* ViewController.m in Sources */,
 				CE3D7A45251D3D4600618550 /* AppDelegate.m in Sources */,
 				CE3D7A56251D3D4900618550 /* main.m in Sources */,
+				CEA66653251D441E0088220A /* CrashManager.m in Sources */,
 				CE3D7A48251D3D4600618550 /* SceneDelegate.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

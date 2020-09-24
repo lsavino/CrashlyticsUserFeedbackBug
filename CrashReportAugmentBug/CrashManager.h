@@ -15,29 +15,20 @@
 //  from Adobe.
 //
 
-#import "ViewController.h"
+#import <Foundation/Foundation.h>
 
-#import "CrashManager.h"
+NS_ASSUME_NONNULL_BEGIN
 
-@interface ViewController ()
+@interface CrashManager : NSObject
 
-@property (nonatomic) UILabel* launchCount;
+@property (readonly) NSInteger launchCount;
 
-@end
++ (instancetype)sharedInstance;
 
-@implementation ViewController
+- (void)setUpOnce;
 
-- (void)loadView {
-	[super loadView];
-
-	self.launchCount = [UILabel new];
-	self.launchCount.text = [NSString stringWithFormat:@"Launch count: %ld", (long)[[CrashManager sharedInstance] launchCount]];
-
-	UIStackView* stack = [[UIStackView alloc] initWithArrangedSubviews:@[
-		self.launchCount
-	]];
-	stack.axis = UILayoutConstraintAxisVertical;
-	stack.frame = self.view.bounds;
-}
+- (void)incrementLaunchCount;
 
 @end
+
+NS_ASSUME_NONNULL_END
