@@ -38,6 +38,8 @@
 	]];
 	stack.axis = UILayoutConstraintAxisVertical;
 	stack.frame = self.view.bounds;
+
+	[self.view addSubview:stack];
 }
 
 @end
