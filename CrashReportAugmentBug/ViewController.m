@@ -27,30 +27,57 @@
 
 @implementation ViewController
 
+#pragma mark - View lifecycle
+
 - (void)loadView {
 	[super loadView];
 
-	self.launchCount = [UILabel new];
-	self.launchCount.text = [NSString stringWithFormat:@"Launch count: %ld", (long)[[CrashManager sharedInstance] launchCount]];
 
-	UILabel* crashStatus = [UILabel new];
-	crashStatus.numberOfLines = 0;
-	crashStatus.text = [[CrashManager sharedInstance] shouldCrash] ? @"App will crash in 3 seconds" : @"App may have crashed. Submit previous crash report?";
-
-	UIStackView* stack = [[UIStackView alloc] initWithArrangedSubviews:@[
-		self.launchCount,
-		crashStatus
-	]];
+	UIStackView* stack = [UIStackView new];
 	stack.axis = UILayoutConstraintAxisVertical;
 	stack.frame = self.view.bounds;
 
 	[self.view addSubview:stack];
+
+	self.launchCount = [UILabel new];
+	self.launchCount.text = [NSString stringWithFormat:@"Launch count: %ld", (long)[[CrashManager sharedInstance] launchCount]];
+	[stack addArrangedSubview:self.launchCount];
+
+	if ([[CrashManager sharedInstance] willAutoCrash]) {
+		UILabel* crashStatus = [UILabel new];
+		crashStatus.numberOfLines = 0;
+		crashStatus.text = @"App will crash in 3 seconds";
+		[stack addArrangedSubview:crashStatus];
+	} else if ([[CrashManager sharedInstance] didCrashOnPreviousLaunch]) {
+		UILabel* crashStatus = [UILabel new];
+		crashStatus.numberOfLines = 0;
+		crashStatus.text = @"App may have crashed. Submit previous crash report?";
+		[stack addArrangedSubview:crashStatus];
+
+		UIButton* submit = [UIButton new];
+		[submit addTarget:self action:@selector(didSelectSendCrashReport) forControlEvents:UIControlEventTouchUpInside];
+		[submit setTitle:@"Submit crash report" forState:UIControlStateNormal];
+		[submit setTitleColor:[UIColor darkGrayColor] forState:UIControlStateNormal];
+		[stack addArrangedSubview:submit];
+	} else {
+		UILabel *noData = [UILabel new];
+		noData.text = @"App won't crash, but Crashlytics thinks the previous launch didn't crash either.";
+		noData.numberOfLines = 0;
+		[stack addArrangedSubview:noData];
+	}
 }
 
 - (void)viewDidAppear:(BOOL)animated {
 	[super viewDidAppear:animated];
 
+	[[CrashManager sharedInstance] sendTestEvent];
 	[[CrashManager sharedInstance] crashIfNeeded];
+}
+
+#pragma mark - Interaction
+
+- (void)didSelectSendCrashReport {
+	[[CrashManager sharedInstance] sendCrashReport];
 }
 
 @end

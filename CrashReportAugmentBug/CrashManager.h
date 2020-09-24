@@ -22,7 +22,8 @@ NS_ASSUME_NONNULL_BEGIN
 @interface CrashManager : NSObject
 
 @property (readonly) NSInteger launchCount;
-@property (readonly) BOOL shouldCrash;
+@property (readonly) BOOL didCrashOnPreviousLaunch;
+@property (readonly) BOOL willAutoCrash;
 
 + (instancetype)sharedInstance;
 

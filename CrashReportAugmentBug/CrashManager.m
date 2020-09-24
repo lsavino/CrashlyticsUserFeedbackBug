@@ -39,6 +39,7 @@ static NSString* kLaunchCountKey = @"CrashTestLaunchCount";
 
 - (void)setUpOnce {
 	[FIRApp configure];
+	[FIRCrashlytics.crashlytics setCrashlyticsCollectionEnabled:NO];
 }
 
 - (void)incrementLaunchCount {
@@ -53,12 +54,17 @@ static NSString* kLaunchCountKey = @"CrashTestLaunchCount";
 	return [[NSUserDefaults standardUserDefaults] integerForKey:kLaunchCountKey];
 }
 
-- (BOOL)shouldCrash {
+- (BOOL)willAutoCrash {
 	return self.launchCount % 2 == 1;
 }
 
+- (BOOL)didCrashOnPreviousLaunch {
+	return ![[FIRCrashlytics crashlytics] didCrashDuringPreviousExecution];
+}
+
 - (void)crashIfNeeded {
-	if (!self.shouldCrash) {
+	if (!self.willAutoCrash) {
+		NSLog(@"Not crashing this time");
 		return;
 	}
 
@@ -70,12 +76,20 @@ static NSString* kLaunchCountKey = @"CrashTestLaunchCount";
 }
 
 - (void)sendCrashReport {
-	[[FIRCrashlytics crashlytics] logWithFormat:@"Intentional crash with launch count == %ld", (long)self.launchCount];
+	[FIRCrashlytics.crashlytics setCustomValue:@(self.launchCount) forKey:@"crash_associated_launch_count"];
+
+	[FIRCrashlytics.crashlytics checkForUnsentReportsWithCompletion:^(BOOL hasUnsentReports) {
+		if (hasUnsentReports) {
+			[FIRCrashlytics.crashlytics sendUnsentReports];
+		} else {
+			NSLog(@"No unsent reports");
+		}
+	}];
 }
 
 - (void)sendTestEvent {
-	[FIRAnalytics logEventWithName:@"Test sample app event logging" parameters:@{
-		@"Launch count" : [NSString stringWithFormat:@"%ld", (long)self.launchCount]
+	[FIRAnalytics logEventWithName:@"test_sample_app_logging" parameters:@{
+		@"launch_count" : [NSString stringWithFormat:@"%ld", (long)self.launchCount]
 	}];
 }
 
