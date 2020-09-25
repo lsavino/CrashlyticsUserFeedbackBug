@@ -53,6 +53,8 @@ static NSString* kLaunchCountKey = @"CrashTestLaunchCount";
 	[FIRCrashlytics.crashlytics setCustomValue:@(count) forKey:@"last_session_launch_count"];
 
 	[FIRCrashlytics.crashlytics log:last_session_string];
+
+	[self incrementLaunchCount];
 }
 
 - (NSString*)userID {

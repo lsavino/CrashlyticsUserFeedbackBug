@@ -27,11 +27,7 @@
 
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-
-	[[CrashManager sharedInstance] setUpOnce];
-
-	[[CrashManager sharedInstance] incrementLaunchCount];
-
+	[CrashManager.sharedInstance setUpOnce];
 	return YES;
 }
 
