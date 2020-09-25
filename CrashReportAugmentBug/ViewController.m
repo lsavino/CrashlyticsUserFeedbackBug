@@ -48,7 +48,9 @@
 		crashStatus.numberOfLines = 0;
 		crashStatus.text = @"App will crash in 3 seconds";
 		[stack addArrangedSubview:crashStatus];
-	} else if ([[CrashManager sharedInstance] didCrashOnPreviousLaunch]) {
+	}
+
+	if ([[CrashManager sharedInstance] didCrashOnPreviousLaunch]) {
 		UILabel* crashStatus = [UILabel new];
 		crashStatus.numberOfLines = 0;
 		crashStatus.text = @"App may have crashed. Submit previous crash report?";
@@ -59,11 +61,21 @@
 		[submit setTitle:@"Submit crash report" forState:UIControlStateNormal];
 		[submit setTitleColor:[UIColor darkGrayColor] forState:UIControlStateNormal];
 		[stack addArrangedSubview:submit];
-	} else {
+	}
+
+	if (![[CrashManager sharedInstance] willAutoCrash] && ![[CrashManager sharedInstance] didCrashOnPreviousLaunch]) {
 		UILabel *noData = [UILabel new];
 		noData.text = @"App won't crash, but Crashlytics thinks the previous launch didn't crash either.";
 		noData.numberOfLines = 0;
 		[stack addArrangedSubview:noData];
+	}
+
+	{
+		UIButton* crashButton = [UIButton new];
+		[crashButton setTitle:@"Crash now" forState:UIControlStateNormal];
+		[crashButton addTarget:self action:@selector(didSelectForceCrash) forControlEvents:UIControlEventTouchUpInside];
+		[crashButton setTitleColor:[UIColor darkGrayColor] forState:UIControlStateNormal];
+		[stack addArrangedSubview:crashButton];
 	}
 }
 
@@ -71,7 +83,7 @@
 	[super viewDidAppear:animated];
 
 	[[CrashManager sharedInstance] sendTestEvent];
-	[[CrashManager sharedInstance] crashIfNeeded];
+	[[CrashManager sharedInstance] crashWithType:CrashTypeConditional];
 }
 
 #pragma mark - Interaction
@@ -85,6 +97,10 @@
 	}]];
 
 	[self presentViewController:reportSender animated:YES completion:nil];
+}
+
+- (void)didSelectForceCrash {
+	[[CrashManager sharedInstance] crashWithType:CrashTypeAlways];
 }
 
 @end

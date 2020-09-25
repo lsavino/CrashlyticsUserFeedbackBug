@@ -40,6 +40,8 @@ static NSString* kLaunchCountKey = @"CrashTestLaunchCount";
 - (void)setUpOnce {
 	[FIRApp configure];
 	[FIRCrashlytics.crashlytics setCrashlyticsCollectionEnabled:NO];
+
+	[FIRCrashlytics.crashlytics setCustomValue:@"test value" forKey:@"initial_crash_key"];
 }
 
 - (void)incrementLaunchCount {
@@ -62,14 +64,24 @@ static NSString* kLaunchCountKey = @"CrashTestLaunchCount";
 	return [[FIRCrashlytics crashlytics] didCrashDuringPreviousExecution];
 }
 
-- (void)crashIfNeeded {
-	if (!self.willAutoCrash) {
-		NSLog(@"Not crashing this time");
-		return;
+- (void)crashWithType:(CrashType)type {
+	switch (type) {
+		case CrashTypeAlways:
+			[self crashWithDelay:0];
+			break;
+
+		case CrashTypeConditional:
+			if ([self willAutoCrash]) {
+				[self crashWithDelay:3];
+			}
+			break;
 	}
+}
+
+- (void)crashWithDelay:(NSTimeInterval)delay {
 
 	NSInteger crashIndex = self.launchCount;
-	dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+	dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delay * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
 		NSArray* items = @[@"a"];
 		NSString* i = items[crashIndex];
 		NSLog(@"Crashed with %@", i);

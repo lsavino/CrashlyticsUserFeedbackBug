@@ -19,6 +19,11 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+typedef enum : NSUInteger {
+	CrashTypeAlways,
+	CrashTypeConditional,
+} CrashType;
+
 @interface CrashManager : NSObject
 
 @property (readonly) NSInteger launchCount;
@@ -32,7 +37,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)incrementLaunchCount;
 - (void)resetLaunchCount;
 
-- (void)crashIfNeeded;
+- (void)crashWithType:(CrashType)type;
 
 - (void)sendCrashReport;
 
