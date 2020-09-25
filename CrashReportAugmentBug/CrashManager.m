@@ -49,8 +49,7 @@ static NSString* kLaunchCountKey = @"CrashTestLaunchCount";
     long count = self.lastSessionLaunchCount;
     NSString *last_session_string = [NSString stringWithFormat:@"last session launch count: %ld", (long)count];
 
-	[FIRCrashlytics.crashlytics setCustomValue:NSDate.date forKey:@"launch_timestamp"];
-	[FIRCrashlytics.crashlytics setCustomValue:@(count) forKey:@"last_session_launch_count"];
+    [FIRCrashlytics.crashlytics setCustomValue:@"banana" forKey:@"banana"];
 
 	[FIRCrashlytics.crashlytics log:last_session_string];
 
@@ -87,7 +86,17 @@ static NSString* kLaunchCountKey = @"CrashTestLaunchCount";
 }
 
 - (BOOL)didCrashOnPreviousLaunch {
-	return [[FIRCrashlytics crashlytics] didCrashDuringPreviousExecution];
+    bool result = [[FIRCrashlytics crashlytics] didCrashDuringPreviousExecution];
+
+    if (result) {
+        NSString* userID = self.userID;
+        [FIRCrashlytics.crashlytics setUserID:userID];
+        [FIRAnalytics logEventWithName:@"crash_detected" parameters:@{
+            @"user_id": userID
+        }];
+    }
+
+	return result;
 }
 
 - (void)crashWithType:(CrashType)type {
@@ -103,7 +112,7 @@ static NSString* kLaunchCountKey = @"CrashTestLaunchCount";
         } break;
 
 		case CrashTypeBadIndex: {
-            NSString* i = @[][self.lastSessionLaunchCount];
+            NSString* i = @[][self.currentSessionLaunchCount];
             NSLog(@"Crashed with %@", i);
         } break;
 	}
