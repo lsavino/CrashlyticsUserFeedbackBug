@@ -5,19 +5,17 @@ DSYM_FILE_PATH="${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}"
 echo "dSYM File Path:"
 echo ${DSYM_FILE_PATH}
 
-DIR_SCRIPT="$(dirname $0)"
+UPLOAD_SYMBOLS_EXE="'${PROJECT_DIR}'/scripts/upload-symbols"
 
-echo "dir script:"
-echo ${DIR_SCRIPT}
+echo "upload executable:"
+echo ${UPLOAD_SYMBOLS_EXE}
 
-UPLOAD_ARGS="-gsp ${BUILT_PRODUCTS_DIR}/GoogleService-Info.plist -p ios ${DSYM_FILE_PATH}"
+UPLOAD_ARGS="-gsp '${PROJECT_DIR}'/'${PRODUCT_NAME}'/GoogleService-Info.plist -p ios '${DSYM_FILE_PATH}'"
 
 echo "upload args:"
 echo ${UPLOAD_ARGS}
 
-exit 0
+eval "${UPLOAD_SYMBOLS_EXE}" "${UPLOAD_ARGS}"
+RETURN_CODE=$?
 
-
-
-# ~/Downloads/Firebase/FirebaseCrashlytics/upload-symbols -gsp ~/code/finding\ things/CrashReportAugmentBug/CrashReportAugmentBug/GoogleService-Info.plist -p ios /Users/laurasavino/Library/Developer/Xcode/DerivedData/CrashReportAugmentBug-btacclqvtuiuohfbtxcazwjstqjl/Build/Products
-
+exit $RETURN_CODE

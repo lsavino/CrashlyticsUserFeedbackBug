@@ -27,7 +27,6 @@
 		CEA6664F251D433A0088220A /* FirebaseCrashlytics.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEA6664E251D433A0088220A /* FirebaseCrashlytics.xcframework */; };
 		CEA66653251D441E0088220A /* CrashManager.m in Sources */ = {isa = PBXBuildFile; fileRef = CEA66652251D441E0088220A /* CrashManager.m */; };
 		CEA66655251D49AF0088220A /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = CEA66654251D49AF0088220A /* GoogleService-Info.plist */; };
-		CEDA20FB251E7144001F08EF /* upload-symbols in Resources */ = {isa = PBXBuildFile; fileRef = CEDA20FA251E7143001F08EF /* upload-symbols */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -203,7 +202,6 @@
 				CEA66655251D49AF0088220A /* GoogleService-Info.plist in Resources */,
 				CE3D7A50251D3D4900618550 /* Assets.xcassets in Resources */,
 				CE3D7A4E251D3D4700618550 /* Main.storyboard in Resources */,
-				CEDA20FB251E7144001F08EF /* upload-symbols in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -225,8 +223,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "
-";
+			shellScript = "exec \"${PROJECT_DIR}\"/scripts/dsym_upload.sh\nexit 1\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
