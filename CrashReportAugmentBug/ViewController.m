@@ -46,7 +46,7 @@ void addGap(UIStackView* stack) {
 	[self.view addSubview:stack];
 
 	self.launchCount = [UILabel new];
-	self.launchCount.text = [NSString stringWithFormat:@"Launch count: %ld", (long)[[CrashManager sharedInstance] launchCount]];
+	self.launchCount.text = [NSString stringWithFormat:@"Launch count: %ld", (long)[[CrashManager sharedInstance] currentSessionLaunchCount]];
 	[stack addArrangedSubview:self.launchCount];
 
     UILabel* userIDLabel = [UILabel new];
@@ -56,26 +56,19 @@ void addGap(UIStackView* stack) {
 
     addGap(stack);
 
-	if ([[CrashManager sharedInstance] didCrashOnPreviousLaunch]) {
-		UILabel* crashStatus = [UILabel new];
-		crashStatus.numberOfLines = 0;
-		crashStatus.text = @"App may have crashed. Submit previous crash report?";
-		[stack addArrangedSubview:crashStatus];
+    UILabel *noData = [UILabel new];
+    bool didCrash = [[CrashManager sharedInstance] didCrashOnPreviousLaunch];
+    noData.text = [NSString stringWithFormat:@"Did you crash on last launch: %@", didCrash ? @"YES" : @"No"];
+    noData.numberOfLines = 0;
+    [stack addArrangedSubview:noData];
 
+	if (didCrash) {
 		UIButton* submit = [UIButton new];
 		[submit addTarget:self action:@selector(didSelectSendCrashReport) forControlEvents:UIControlEventTouchUpInside];
 		[submit setTitle:@"Submit crash report" forState:UIControlStateNormal];
 		[submit setTitleColor:[UIColor darkGrayColor] forState:UIControlStateNormal];
 		[stack addArrangedSubview:submit];
 	}
-
-    addGap(stack);
-
-    UILabel *noData = [UILabel new];
-    bool didCrash = [[CrashManager sharedInstance] didCrashOnPreviousLaunch];
-    noData.text = [NSString stringWithFormat:@"Did you crash on last launch: %@", didCrash ? @"YES" : @"No"];
-    noData.numberOfLines = 0;
-    [stack addArrangedSubview:noData];
 
     addGap(stack);
 
@@ -105,11 +98,10 @@ void addGap(UIStackView* stack) {
 #pragma mark - Interaction
 
 - (void)didSelectSendCrashReport {
-
-	NSString* message = [NSString stringWithFormat:@"This report is for launch number %ld", (long)[CrashManager sharedInstance].launchCount];
+	NSString* message = [NSString stringWithFormat:@"This report is for launch number %ld", (long)[CrashManager sharedInstance].lastSessionLaunchCount];
 	UIAlertController* reportSender = [UIAlertController alertControllerWithTitle:@"Report Details" message:message preferredStyle:UIAlertControllerStyleAlert];
 	[reportSender addAction:[UIAlertAction actionWithTitle:@"Send" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-		[[CrashManager sharedInstance] sendCrashReport];
+		[[CrashManager sharedInstance] sendCrashReport:self];
 	}]];
 
 	[self presentViewController:reportSender animated:YES completion:nil];

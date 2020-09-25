@@ -46,9 +46,13 @@ static NSString* kLaunchCountKey = @"CrashTestLaunchCount";
 	[FIRCrashlytics.crashlytics setCrashlyticsCollectionEnabled:NO];
     [FIRCrashlytics.crashlytics setUserID:self.userID];
 
-	[FIRCrashlytics.crashlytics setCustomValue:NSDate.date forKey:@"initial_crash_key"];
+    long count = self.lastSessionLaunchCount;
+    NSString *last_session_string = [NSString stringWithFormat:@"last session launch count: %ld", (long)count];
 
-	[FIRCrashlytics.crashlytics log:@"test log"];
+	[FIRCrashlytics.crashlytics setCustomValue:NSDate.date forKey:@"launch_timestamp"];
+	[FIRCrashlytics.crashlytics setCustomValue:@(count) forKey:@"last_session_launch_count"];
+
+	[FIRCrashlytics.crashlytics log:last_session_string];
 }
 
 - (NSString*)userID {
@@ -59,14 +63,24 @@ static NSString* kLaunchCountKey = @"CrashTestLaunchCount";
 }
 
 - (void)incrementLaunchCount {
-	[[NSUserDefaults standardUserDefaults] setInteger:self.launchCount + 1 forKey:kLaunchCountKey];
+    // only permit this once per session. Subsequent calls do nothing.
+	static dispatch_once_t onceToken;
+	dispatch_once(&onceToken, ^{
+        [[NSUserDefaults standardUserDefaults] setInteger:self.lastSessionLaunchCount + 1 forKey:kLaunchCountKey];
+	});
 }
 
-- (void)resetLaunchCount {
-	[[NSUserDefaults standardUserDefaults] setInteger:0 forKey:kLaunchCountKey];
+- (NSInteger)lastSessionLaunchCount {
+	static NSInteger value;
+	static dispatch_once_t onceToken;
+	dispatch_once(&onceToken, ^{
+		value = [[NSUserDefaults standardUserDefaults] integerForKey:kLaunchCountKey];
+	});
+
+	return value;
 }
 
-- (NSInteger)launchCount {
+- (NSInteger)currentSessionLaunchCount {
 	return [[NSUserDefaults standardUserDefaults] integerForKey:kLaunchCountKey];
 }
 
@@ -76,34 +90,45 @@ static NSString* kLaunchCountKey = @"CrashTestLaunchCount";
 
 - (void)crashWithType:(CrashType)type {
 	switch (type) {
-		case CrashTypeAssertion:
+		case CrashTypeAssertion: {
             assert(false);
-			break;
+        } break;
+
+		case CrashTypeException: {
+            @throw [NSException exceptionWithName:@"TestCrashException"
+                                           reason:@"Test crash: exception"
+                                         userInfo:nil];
+        } break;
 
 		case CrashTypeBadIndex: {
-            NSArray* items = @[@"a"];
-            NSString* i = items[42];
+            NSString* i = @[][self.lastSessionLaunchCount];
             NSLog(@"Crashed with %@", i);
         } break;
 	}
 }
 
-- (void)sendCrashReport {
-    [FIRCrashlytics.crashlytics setCustomValue:NSDate.date forKey:@"crash_reported_timestamp"];
+- (void)sendCrashReport:(UIViewController*)parent {
+    // To simulate our crash report feedback taking some time, we put a delay on this reporting.
+	dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [FIRCrashlytics.crashlytics setCustomValue:@(self.lastSessionLaunchCount) forKey:@"crash_feedback_for_session"];
 
-	[FIRCrashlytics.crashlytics checkForUnsentReportsWithCompletion:^(BOOL hasUnsentReports) {
-		if (hasUnsentReports) {
-			[FIRCrashlytics.crashlytics setCustomValue:@(self.launchCount) forKey:@"crash_associated_launch_count"];
-			[FIRCrashlytics.crashlytics sendUnsentReports];
-		} else {
-			NSLog(@"No unsent reports");
-		}
-	}];
+        [FIRCrashlytics.crashlytics checkForUnsentReportsWithCompletion:^(BOOL hasUnsentReports) {
+            if (hasUnsentReports) {
+                [FIRCrashlytics.crashlytics sendUnsentReports];
+            } else {
+                NSLog(@"No unsent reports");
+            }
+
+            UIAlertController* reportSender = [UIAlertController alertControllerWithTitle:@"Report Sent" message:@":-)" preferredStyle:UIAlertControllerStyleAlert];
+            [reportSender addAction:[UIAlertAction actionWithTitle:@"Awesome" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {}]];
+            [parent presentViewController:reportSender animated:YES completion:nil];
+        }];
+	});
 }
 
 - (void)sendTestEvent {
 	[FIRAnalytics logEventWithName:@"test_sample_app_logging" parameters:@{
-		@"launch_count" : [NSString stringWithFormat:@"%ld", (long)self.launchCount]
+		@"launch_count" : [NSString stringWithFormat:@"%ld", (long)self.lastSessionLaunchCount]
 	}];
 }
 
