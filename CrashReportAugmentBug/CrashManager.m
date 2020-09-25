@@ -42,6 +42,8 @@ static NSString* kLaunchCountKey = @"CrashTestLaunchCount";
 	[FIRCrashlytics.crashlytics setCrashlyticsCollectionEnabled:NO];
 
 	[FIRCrashlytics.crashlytics setCustomValue:@"test value" forKey:@"initial_crash_key"];
+
+	[FIRCrashlytics.crashlytics log:@"test log"];
 }
 
 - (void)incrementLaunchCount {
@@ -57,7 +59,8 @@ static NSString* kLaunchCountKey = @"CrashTestLaunchCount";
 }
 
 - (BOOL)willAutoCrash {
-	return self.launchCount % 2 == 1;
+	return NO;
+//	return self.launchCount % 2 == 1;
 }
 
 - (BOOL)didCrashOnPreviousLaunch {
