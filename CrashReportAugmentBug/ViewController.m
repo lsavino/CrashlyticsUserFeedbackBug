@@ -77,7 +77,14 @@
 #pragma mark - Interaction
 
 - (void)didSelectSendCrashReport {
-	[[CrashManager sharedInstance] sendCrashReport];
+
+	NSString* message = [NSString stringWithFormat:@"This report is for launch number %ld", (long)[CrashManager sharedInstance].launchCount];
+	UIAlertController* reportSender = [UIAlertController alertControllerWithTitle:@"Report Details" message:message preferredStyle:UIAlertControllerStyleAlert];
+	[reportSender addAction:[UIAlertAction actionWithTitle:@"Send" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+		[[CrashManager sharedInstance] sendCrashReport];
+	}]];
+
+	[self presentViewController:reportSender animated:YES completion:nil];
 }
 
 @end
