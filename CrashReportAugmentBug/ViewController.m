@@ -25,13 +25,19 @@
 
 @end
 
+void addGap(UIStackView* stack) {
+    UILabel* gapLabel = [UILabel new];
+    gapLabel.numberOfLines = 0;
+    gapLabel.text = @" ";
+    [stack addArrangedSubview:gapLabel];
+}
+
 @implementation ViewController
 
 #pragma mark - View lifecycle
 
 - (void)loadView {
 	[super loadView];
-
 
 	UIStackView* stack = [UIStackView new];
 	stack.axis = UILayoutConstraintAxisVertical;
@@ -43,12 +49,12 @@
 	self.launchCount.text = [NSString stringWithFormat:@"Launch count: %ld", (long)[[CrashManager sharedInstance] launchCount]];
 	[stack addArrangedSubview:self.launchCount];
 
-	if ([[CrashManager sharedInstance] willAutoCrash]) {
-		UILabel* crashStatus = [UILabel new];
-		crashStatus.numberOfLines = 0;
-		crashStatus.text = @"App will crash in 3 seconds";
-		[stack addArrangedSubview:crashStatus];
-	}
+    UILabel* userIDLabel = [UILabel new];
+    userIDLabel.numberOfLines = 0;
+    userIDLabel.text = [NSString stringWithFormat:@"Your ID: %@", CrashManager.sharedInstance.userID];
+    [stack addArrangedSubview:userIDLabel];
+
+    addGap(stack);
 
 	if ([[CrashManager sharedInstance] didCrashOnPreviousLaunch]) {
 		UILabel* crashStatus = [UILabel new];
@@ -63,17 +69,28 @@
 		[stack addArrangedSubview:submit];
 	}
 
-	if (![[CrashManager sharedInstance] willAutoCrash] && ![[CrashManager sharedInstance] didCrashOnPreviousLaunch]) {
-		UILabel *noData = [UILabel new];
-		noData.text = @"App won't crash, but Crashlytics thinks the previous launch didn't crash either.";
-		noData.numberOfLines = 0;
-		[stack addArrangedSubview:noData];
+    addGap(stack);
+
+    UILabel *noData = [UILabel new];
+    bool didCrash = [[CrashManager sharedInstance] didCrashOnPreviousLaunch];
+    noData.text = [NSString stringWithFormat:@"Did you crash on last launch: %@", didCrash ? @"YES" : @"No"];
+    noData.numberOfLines = 0;
+    [stack addArrangedSubview:noData];
+
+    addGap(stack);
+
+	{
+		UIButton* crashButton = [UIButton new];
+		[crashButton setTitle:@"Crash now (assertion)" forState:UIControlStateNormal];
+		[crashButton addTarget:self action:@selector(didSelectForceCrashAssertion) forControlEvents:UIControlEventTouchUpInside];
+		[crashButton setTitleColor:[UIColor darkGrayColor] forState:UIControlStateNormal];
+		[stack addArrangedSubview:crashButton];
 	}
 
 	{
 		UIButton* crashButton = [UIButton new];
-		[crashButton setTitle:@"Crash now" forState:UIControlStateNormal];
-		[crashButton addTarget:self action:@selector(didSelectForceCrash) forControlEvents:UIControlEventTouchUpInside];
+		[crashButton setTitle:@"Crash now (bad index)" forState:UIControlStateNormal];
+		[crashButton addTarget:self action:@selector(didSelectForceCrashBadIndex) forControlEvents:UIControlEventTouchUpInside];
 		[crashButton setTitleColor:[UIColor darkGrayColor] forState:UIControlStateNormal];
 		[stack addArrangedSubview:crashButton];
 	}
@@ -83,7 +100,6 @@
 	[super viewDidAppear:animated];
 
 	[[CrashManager sharedInstance] sendTestEvent];
-	[[CrashManager sharedInstance] crashWithType:CrashTypeConditional];
 }
 
 #pragma mark - Interaction
@@ -99,8 +115,12 @@
 	[self presentViewController:reportSender animated:YES completion:nil];
 }
 
-- (void)didSelectForceCrash {
-	[[CrashManager sharedInstance] crashWithType:CrashTypeAlways];
+- (void)didSelectForceCrashAssertion {
+	[[CrashManager sharedInstance] crashWithType:CrashTypeAssertion];
+}
+
+- (void)didSelectForceCrashBadIndex {
+	[[CrashManager sharedInstance] crashWithType:CrashTypeBadIndex];
 }
 
 @end

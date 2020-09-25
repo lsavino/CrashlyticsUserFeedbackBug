@@ -20,15 +20,14 @@
 NS_ASSUME_NONNULL_BEGIN
 
 typedef enum : NSUInteger {
-	CrashTypeAlways,
-	CrashTypeConditional,
+	CrashTypeAssertion,
+	CrashTypeBadIndex,
 } CrashType;
 
 @interface CrashManager : NSObject
 
 @property (readonly) NSInteger launchCount;
 @property (readonly) BOOL didCrashOnPreviousLaunch;
-@property (readonly) BOOL willAutoCrash;
 
 + (instancetype)sharedInstance;
 
@@ -42,6 +41,8 @@ typedef enum : NSUInteger {
 - (void)sendCrashReport;
 
 - (void)sendTestEvent;
+
+- (NSString*)userID;
 
 @end
 

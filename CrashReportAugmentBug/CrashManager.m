@@ -15,9 +15,13 @@
 //  from Adobe.
 //
 
+#import "UIKit/UIKit.h"
+
 #import "CrashManager.h"
 
 #import "Firebase.h"
+
+#include <pwd.h>
 
 @interface CrashManager()
 
@@ -40,10 +44,18 @@ static NSString* kLaunchCountKey = @"CrashTestLaunchCount";
 - (void)setUpOnce {
 	[FIRApp configure];
 	[FIRCrashlytics.crashlytics setCrashlyticsCollectionEnabled:NO];
+    [FIRCrashlytics.crashlytics setUserID:self.userID];
 
-	[FIRCrashlytics.crashlytics setCustomValue:@"test value" forKey:@"initial_crash_key"];
+	[FIRCrashlytics.crashlytics setCustomValue:NSDate.date forKey:@"initial_crash_key"];
 
 	[FIRCrashlytics.crashlytics log:@"test log"];
+}
+
+- (NSString*)userID {
+    NSUUID *deviceID = UIDevice.currentDevice.identifierForVendor;
+    NSString *uuidString = deviceID.UUIDString;
+    NSRange range = NSMakeRange(0, 5);
+    return [uuidString substringWithRange:range];
 }
 
 - (void)incrementLaunchCount {
@@ -58,40 +70,26 @@ static NSString* kLaunchCountKey = @"CrashTestLaunchCount";
 	return [[NSUserDefaults standardUserDefaults] integerForKey:kLaunchCountKey];
 }
 
-- (BOOL)willAutoCrash {
-	return NO;
-//	return self.launchCount % 2 == 1;
-}
-
 - (BOOL)didCrashOnPreviousLaunch {
 	return [[FIRCrashlytics crashlytics] didCrashDuringPreviousExecution];
 }
 
 - (void)crashWithType:(CrashType)type {
 	switch (type) {
-		case CrashTypeAlways:
-			[self crashWithDelay:0];
+		case CrashTypeAssertion:
+            assert(false);
 			break;
 
-		case CrashTypeConditional:
-			if ([self willAutoCrash]) {
-				[self crashWithDelay:3];
-			}
-			break;
+		case CrashTypeBadIndex: {
+            NSArray* items = @[@"a"];
+            NSString* i = items[42];
+            NSLog(@"Crashed with %@", i);
+        } break;
 	}
 }
 
-- (void)crashWithDelay:(NSTimeInterval)delay {
-
-	NSInteger crashIndex = self.launchCount;
-	dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delay * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-		NSArray* items = @[@"a"];
-		NSString* i = items[crashIndex];
-		NSLog(@"Crashed with %@", i);
-	});
-}
-
 - (void)sendCrashReport {
+    [FIRCrashlytics.crashlytics setCustomValue:NSDate.date forKey:@"crash_reported_timestamp"];
 
 	[FIRCrashlytics.crashlytics checkForUnsentReportsWithCompletion:^(BOOL hasUnsentReports) {
 		if (hasUnsentReports) {
