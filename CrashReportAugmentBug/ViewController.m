@@ -35,7 +35,7 @@
 
 	UIStackView* stack = [UIStackView new];
 	stack.axis = UILayoutConstraintAxisVertical;
-	stack.frame = self.view.bounds;
+	stack.frame = CGRectInset(self.view.bounds, 20, 60);
 
 	[self.view addSubview:stack];
 

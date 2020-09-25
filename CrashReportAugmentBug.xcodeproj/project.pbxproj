@@ -27,6 +27,7 @@
 		CEA6664F251D433A0088220A /* FirebaseCrashlytics.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEA6664E251D433A0088220A /* FirebaseCrashlytics.xcframework */; };
 		CEA66653251D441E0088220A /* CrashManager.m in Sources */ = {isa = PBXBuildFile; fileRef = CEA66652251D441E0088220A /* CrashManager.m */; };
 		CEA66655251D49AF0088220A /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = CEA66654251D49AF0088220A /* GoogleService-Info.plist */; };
+		CEDA20FB251E7144001F08EF /* upload-symbols in Resources */ = {isa = PBXBuildFile; fileRef = CEDA20FA251E7143001F08EF /* upload-symbols */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -57,6 +58,7 @@
 		CEA66651251D441E0088220A /* CrashManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CrashManager.h; sourceTree = "<group>"; };
 		CEA66652251D441E0088220A /* CrashManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CrashManager.m; sourceTree = "<group>"; };
 		CEA66654251D49AF0088220A /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		CEDA20FA251E7143001F08EF /* upload-symbols */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; path = "upload-symbols"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -122,6 +124,7 @@
 		CEA6664D251D43160088220A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				CEDA20FA251E7143001F08EF /* upload-symbols */,
 				CEA66650251D43690088220A /* Firebase.h */,
 				CEA66641251D430E0088220A /* FIRAnalyticsConnector.framework */,
 				CEA6663C251D430D0088220A /* FirebaseAnalytics.framework */,
@@ -148,6 +151,7 @@
 				CE3D7A3C251D3D4600618550 /* Sources */,
 				CE3D7A3D251D3D4600618550 /* Frameworks */,
 				CE3D7A3E251D3D4600618550 /* Resources */,
+				CEDA20F9251E7110001F08EF /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -199,10 +203,32 @@
 				CEA66655251D49AF0088220A /* GoogleService-Info.plist in Resources */,
 				CE3D7A50251D3D4900618550 /* Assets.xcassets in Resources */,
 				CE3D7A4E251D3D4700618550 /* Main.storyboard in Resources */,
+				CEDA20FB251E7144001F08EF /* upload-symbols in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		CEDA20F9251E7110001F08EF /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "
+";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		CE3D7A3C251D3D4600618550 /* Sources */ = {
@@ -289,7 +315,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 13.7;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.5;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -341,7 +367,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 13.7;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.5;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;

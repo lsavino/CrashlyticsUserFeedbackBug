@@ -59,7 +59,7 @@ static NSString* kLaunchCountKey = @"CrashTestLaunchCount";
 }
 
 - (BOOL)didCrashOnPreviousLaunch {
-	return ![[FIRCrashlytics crashlytics] didCrashDuringPreviousExecution];
+	return [[FIRCrashlytics crashlytics] didCrashDuringPreviousExecution];
 }
 
 - (void)crashIfNeeded {
@@ -68,18 +68,19 @@ static NSString* kLaunchCountKey = @"CrashTestLaunchCount";
 		return;
 	}
 
+	NSInteger crashIndex = self.launchCount;
 	dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
 		NSArray* items = @[@"a"];
-		NSString* i = items[2];
+		NSString* i = items[crashIndex];
 		NSLog(@"Crashed with %@", i);
 	});
 }
 
 - (void)sendCrashReport {
-	[FIRCrashlytics.crashlytics setCustomValue:@(self.launchCount) forKey:@"crash_associated_launch_count"];
 
 	[FIRCrashlytics.crashlytics checkForUnsentReportsWithCompletion:^(BOOL hasUnsentReports) {
 		if (hasUnsentReports) {
+			[FIRCrashlytics.crashlytics setCustomValue:@(self.launchCount) forKey:@"crash_associated_launch_count"];
 			[FIRCrashlytics.crashlytics sendUnsentReports];
 		} else {
 			NSLog(@"No unsent reports");
