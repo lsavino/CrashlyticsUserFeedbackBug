@@ -119,22 +119,19 @@ static NSString* kLaunchCountKey = @"CrashTestLaunchCount";
 }
 
 - (void)sendCrashReport:(UIViewController*)parent {
-    // To simulate our crash report feedback taking some time, we put a delay on this reporting.
-	dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        [FIRCrashlytics.crashlytics setCustomValue:@(self.lastSessionLaunchCount) forKey:@"crash_feedback_for_session"];
+    [FIRCrashlytics.crashlytics setCustomValue:@(self.lastSessionLaunchCount) forKey:@"crash_feedback_for_session"];
 
-        [FIRCrashlytics.crashlytics checkForUnsentReportsWithCompletion:^(BOOL hasUnsentReports) {
-            if (hasUnsentReports) {
-                [FIRCrashlytics.crashlytics sendUnsentReports];
-            } else {
-                NSLog(@"No unsent reports");
-            }
+    [FIRCrashlytics.crashlytics checkForUnsentReportsWithCompletion:^(BOOL hasUnsentReports) {
+        if (hasUnsentReports) {
+            [FIRCrashlytics.crashlytics sendUnsentReports];
 
-            UIAlertController* reportSender = [UIAlertController alertControllerWithTitle:@"Report Sent" message:@":-)" preferredStyle:UIAlertControllerStyleAlert];
+            UIAlertController* reportSender = [UIAlertController alertControllerWithTitle:@"Report Sent" message:@"" preferredStyle:UIAlertControllerStyleAlert];
             [reportSender addAction:[UIAlertAction actionWithTitle:@"Awesome" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {}]];
             [parent presentViewController:reportSender animated:YES completion:nil];
-        }];
-	});
+        } else {
+            NSLog(@"No unsent reports");
+        }
+    }];
 }
 
 - (void)sendTestEvent {
